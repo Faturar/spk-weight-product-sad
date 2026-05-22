@@ -1,0 +1,27 @@
+<?php
+require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../includes/auth.php';
+require_once __DIR__ . '/../../includes/forms.php';
+require_roles(['admin']);
+$errors = [];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $errors = require_fields($_POST, ['kode_kriteria' => 'Kode kriteria', 'nama_kriteria' => 'Nama kriteria', 'bobot' => 'Bobot', 'tipe' => 'Tipe']);
+    if (!$errors && (float) $_POST['bobot'] <= 0) $errors[] = 'Bobot harus lebih dari 0.';
+    if (!$errors) {
+        $stmt = $pdo->prepare('INSERT INTO kriteria (kode_kriteria, nama_kriteria, bobot, tipe) VALUES (?, ?, ?, ?)');
+        $stmt->execute([trim($_POST['kode_kriteria']), trim($_POST['nama_kriteria']), (float) $_POST['bobot'], $_POST['tipe']]);
+        flash('success', 'Data kriteria berhasil ditambahkan.');
+        redirect('pages/kriteria/index.php');
+    }
+}
+include __DIR__ . '/../../includes/header.php';
+?>
+<div class="card"><h2>Tambah Kriteria</h2><?php print_errors($errors); ?><form method="post">
+    <div class="form-grid">
+        <div class="form-group"><label>Kode Kriteria</label><input name="kode_kriteria" required value="<?= e($_POST['kode_kriteria'] ?? '') ?>"></div>
+        <div class="form-group"><label>Nama Kriteria</label><input name="nama_kriteria" required value="<?= e($_POST['nama_kriteria'] ?? '') ?>"></div>
+        <div class="form-group"><label>Bobot</label><input type="number" step="0.01" min="0.01" name="bobot" required value="<?= e($_POST['bobot'] ?? '') ?>"></div>
+        <div class="form-group"><label>Tipe</label><select name="tipe" required><option value="benefit">benefit</option><option value="cost">cost</option></select></div>
+    </div><button class="btn btn-primary" type="submit">Simpan</button><a class="btn" href="index.php">Kembali</a>
+</form></div>
+<?php include __DIR__ . '/../../includes/footer.php'; ?>
