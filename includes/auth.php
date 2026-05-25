@@ -5,9 +5,30 @@ if (session_status() === PHP_SESSION_NONE) {
 
 function base_url(string $path = ''): string
 {
-    $script = str_replace('\\', '/', $_SERVER['SCRIPT_NAME']);
-    $pos = strpos($script, '/spk-pramuka-wp/');
-    $base = $pos === false ? '' : substr($script, 0, $pos + strlen('/spk-pramuka-wp'));
+    static $base = null;
+
+    if ($base === null) {
+        $documentRoot = realpath($_SERVER['DOCUMENT_ROOT'] ?? '');
+        $projectRoot = realpath(dirname(__DIR__));
+
+        if ($documentRoot && $projectRoot) {
+            $documentRoot = rtrim(str_replace('\\', '/', $documentRoot), '/');
+            $projectRoot = str_replace('\\', '/', $projectRoot);
+
+            if (stripos($projectRoot, $documentRoot) === 0) {
+                $base = trim(substr($projectRoot, strlen($documentRoot)), '/');
+                $base = $base === '' ? '' : '/' . $base;
+            }
+        }
+
+        if ($base === null) {
+            $script = str_replace('\\', '/', $_SERVER['SCRIPT_NAME'] ?? '');
+            $folder = '/' . basename(dirname(__DIR__));
+            $pos = strpos($script, $folder . '/');
+            $base = $pos === false ? '' : substr($script, 0, $pos + strlen($folder));
+        }
+    }
+
     return $base . ($path ? '/' . ltrim($path, '/') : '');
 }
 

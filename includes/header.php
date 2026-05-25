@@ -15,7 +15,7 @@ require_login();
     <?php include __DIR__ . '/sidebar.php'; ?>
     <main class="main">
         <header class="topbar">
-            <button class="menu-toggle" type="button">☰</button>
+            <button class="menu-toggle" type="button" aria-label="Buka menu">&#9776;</button>
             <div>
                 <h1>Sistem Pendukung Keputusan Pramuka Inti</h1>
                 <p>Metode Weighted Product - MTs Nurul Falah Areman</p>
