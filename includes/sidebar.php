@@ -1,6 +1,9 @@
 <?php $role = user_role(); ?>
 <aside class="sidebar">
-    <div class="brand">SPK WP<br><span>Pramuka Inti</span></div>
+    <div class="brand">
+        <img src="<?= e(base_url('logo.png')) ?>" alt="Logo SPK Pramuka WP" class="brand-logo">
+        <div>SPK WP<br><span>Pramuka Inti</span></div>
+    </div>
     <nav>
         <a href="<?= e(base_url('index.php')) ?>">Dashboard</a>
         <?php if (in_array($role, ['admin', 'pembina'], true)): ?>
