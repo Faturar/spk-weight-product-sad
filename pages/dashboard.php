@@ -3,10 +3,13 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/auth.php';
 require_login();
 
+// Data ringkasan untuk kartu statistik di dashboard.
 $jumlahSiswa = (int) $pdo->query('SELECT COUNT(*) FROM siswa')->fetchColumn();
 $jumlahKriteria = (int) $pdo->query('SELECT COUNT(*) FROM kriteria')->fetchColumn();
 $jumlahAspek = (int) $pdo->query('SELECT COUNT(*) FROM aspek')->fetchColumn();
 $jumlahPenilaian = (int) $pdo->query('SELECT COUNT(DISTINCT id_siswa) FROM penilaian')->fetchColumn();
+
+// Mengambil lima ranking terbaik dari hasil perhitungan WP untuk ditampilkan cepat.
 $ranking = $pdo->query('SELECT h.*, s.kode_siswa, s.nama_siswa FROM hasil_wp h JOIN siswa s ON s.id_siswa = h.id_siswa ORDER BY h.ranking ASC LIMIT 5')->fetchAll();
 include __DIR__ . '/../includes/header.php';
 ?>

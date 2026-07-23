@@ -5,8 +5,10 @@ require_once __DIR__ . '/../../includes/forms.php';
 require_roles(['admin']);
 $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Validasi data siswa sebelum disimpan ke tabel siswa.
     $errors = require_fields($_POST, ['kode_siswa' => 'Kode siswa', 'nama_siswa' => 'Nama siswa', 'nis' => 'NIS', 'no_handphone' => 'No handphone', 'jenis_kelamin' => 'Jenis kelamin']);
     if (!$errors) {
+        // Data yang sudah valid disimpan memakai prepared statement.
         $stmt = $pdo->prepare('INSERT INTO siswa (kode_siswa, nama_siswa, nis, no_handphone, jenis_kelamin) VALUES (?, ?, ?, ?, ?)');
         $stmt->execute([trim($_POST['kode_siswa']), trim($_POST['nama_siswa']), trim($_POST['nis']), trim($_POST['no_handphone']), $_POST['jenis_kelamin']]);
         flash('success', 'Data siswa berhasil ditambahkan.');

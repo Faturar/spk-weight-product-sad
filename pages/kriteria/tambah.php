@@ -5,9 +5,11 @@ require_once __DIR__ . '/../../includes/forms.php';
 require_roles(['admin']);
 $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Kriteria berisi kode, nama, bobot, dan tipe benefit/cost untuk rumus Weighted Product.
     $errors = require_fields($_POST, ['kode_kriteria' => 'Kode kriteria', 'nama_kriteria' => 'Nama kriteria', 'bobot' => 'Bobot', 'tipe' => 'Tipe']);
     if (!$errors && (float) $_POST['bobot'] <= 0) $errors[] = 'Bobot harus lebih dari 0.';
     if (!$errors) {
+        // Bobot harus lebih dari nol karena nanti dipakai untuk normalisasi bobot.
         $stmt = $pdo->prepare('INSERT INTO kriteria (kode_kriteria, nama_kriteria, bobot, tipe) VALUES (?, ?, ?, ?)');
         $stmt->execute([trim($_POST['kode_kriteria']), trim($_POST['nama_kriteria']), (float) $_POST['bobot'], $_POST['tipe']]);
         flash('success', 'Data kriteria berhasil ditambahkan.');

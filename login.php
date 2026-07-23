@@ -2,23 +2,27 @@
 require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/includes/auth.php';
 
+// Jika user sudah login, tidak perlu membuka halaman login lagi.
 if (!empty($_SESSION['user'])) {
     redirect('index.php');
 }
 
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Ambil data login dari form, lalu validasi agar username dan password tidak kosong.
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
 
     if ($username === '' || $password === '') {
         $error = 'Username dan password wajib diisi.';
     } else {
+        // Prepared statement dipakai untuk mencari user dan menghindari SQL injection.
         $stmt = $pdo->prepare('SELECT * FROM users WHERE username = ? LIMIT 1');
         $stmt->execute([$username]);
         $user = $stmt->fetch();
 
         if ($user && password_verify($password, $user['password'])) {
+            // Jika password cocok, data user disimpan ke session sebagai tanda sudah login.
             $_SESSION['user'] = [
                 'id_user' => $user['id_user'],
                 'nama' => $user['nama'],

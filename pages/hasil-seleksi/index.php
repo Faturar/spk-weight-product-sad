@@ -2,6 +2,8 @@
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../includes/auth.php';
 require_login();
+
+// Hasil seleksi diambil dari tabel hasil_wp yang sudah diproses di menu perhitungan.
 $rows = $pdo->query('SELECT h.*, s.kode_siswa, s.nama_siswa FROM hasil_wp h JOIN siswa s ON s.id_siswa=h.id_siswa ORDER BY h.ranking ASC')->fetchAll();
 include __DIR__ . '/../../includes/header.php';
 ?>

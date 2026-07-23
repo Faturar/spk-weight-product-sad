@@ -2,10 +2,14 @@
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../includes/auth.php';
 require_roles(['admin', 'pembina']);
+
+// Kriteria menjadi kolom tabel, sedangkan siswa menjadi baris penilaian.
 $kriteria = $pdo->query('SELECT * FROM kriteria ORDER BY kode_kriteria ASC')->fetchAll();
 $siswa = $pdo->query('SELECT * FROM siswa ORDER BY kode_siswa ASC')->fetchAll();
 $nilaiStmt = $pdo->query('SELECT * FROM penilaian');
 $nilai = [];
+
+// Nilai disusun menjadi array dua dimensi: [id_siswa][id_kriteria].
 foreach ($nilaiStmt as $n) { $nilai[$n['id_siswa']][$n['id_kriteria']] = $n['nilai']; }
 include __DIR__ . '/../../includes/header.php';
 ?>

@@ -2,14 +2,18 @@
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../includes/auth.php';
 require_roles(['admin']);
+
+// Data kriteria ditampilkan sebagai kolom, sedangkan hasil_wp berisi ranking terbaru.
 $kriteria = $pdo->query('SELECT * FROM kriteria ORDER BY kode_kriteria ASC')->fetchAll();
 $rows = $pdo->query('SELECT h.*, s.kode_siswa, s.nama_siswa FROM hasil_wp h JOIN siswa s ON s.id_siswa=h.id_siswa ORDER BY h.ranking ASC')->fetchAll();
 $nilai = [];
 if ($rows) {
+    // Mengambil semua nilai siswa yang sudah masuk hasil agar tabel perhitungan lengkap.
     $ids = array_column($rows, 'id_siswa');
     $placeholders = implode(',', array_fill(0, count($ids), '?'));
     $stmt = $pdo->prepare("SELECT * FROM penilaian WHERE id_siswa IN ($placeholders)");
     $stmt->execute($ids);
+    // Format array: [id_siswa][id_kriteria] supaya mudah ditampilkan per kolom kriteria.
     foreach ($stmt as $n) { $nilai[$n['id_siswa']][$n['id_kriteria']] = $n['nilai']; }
 }
 include __DIR__ . '/../../includes/header.php';
