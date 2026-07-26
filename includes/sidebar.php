@@ -20,6 +20,7 @@
             <a href="<?= e(base_url('pages/perhitungan/index.php')) ?>">Perhitungan WP</a>
         <?php endif; ?>
         <a href="<?= e(base_url('pages/hasil-seleksi/index.php')) ?>">Hasil Seleksi</a>
+        <a href="<?= e(base_url('pages/report/index.php')) ?>">Report PDF</a>
         <a href="<?= e(base_url('logout.php')) ?>" class="logout">Logout</a>
     </nav>
 </aside>
