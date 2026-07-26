@@ -59,7 +59,7 @@ class SimplePdfReport
 
         $x = $this->width - 260;
         $this->y += 28;
-        $this->text($x, $this->y, $city . ', ' . date('d-m-Y'), 10);
+        $this->text($x, $this->y, $city . ', ' . format_tanggal_indonesia(), 10);
         $this->text($x + 25, $this->y + 18, 'Mengetahui,', 10);
         $this->text($x + 42, $this->y + 36, $name, 10);
         $this->text($x + 15, $this->y + 92, '________________________', 10);
@@ -254,7 +254,7 @@ class SimplePdfReport
 function send_pdf_report(string $title, array $columns, array $rows, string $filename): void
 {
     date_default_timezone_set('Asia/Jakarta');
-    $generatedAt = date('d-m-Y H:i:s') . ' WIB';
+    $generatedAt = format_tanggal_indonesia();
     $pdf = new SimplePdfReport($title, $generatedAt);
     $pdf->table($columns, $rows);
     $pdf->signature();
@@ -264,4 +264,34 @@ function send_pdf_report(string $title, array $columns, array $rows, string $fil
     header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
     echo $pdf->output();
     exit;
+}
+
+function format_tanggal_indonesia(?int $timestamp = null): string
+{
+    $timestamp ??= time();
+    $hari = [
+        'Sunday' => 'Minggu',
+        'Monday' => 'Senin',
+        'Tuesday' => 'Selasa',
+        'Wednesday' => 'Rabu',
+        'Thursday' => 'Kamis',
+        'Friday' => 'Jumat',
+        'Saturday' => 'Sabtu',
+    ];
+    $bulan = [
+        'January' => 'januari',
+        'February' => 'februari',
+        'March' => 'maret',
+        'April' => 'april',
+        'May' => 'mei',
+        'June' => 'juni',
+        'July' => 'juli',
+        'August' => 'agustus',
+        'September' => 'september',
+        'October' => 'oktober',
+        'November' => 'november',
+        'December' => 'desember',
+    ];
+
+    return $hari[date('l', $timestamp)] . ' ' . date('j', $timestamp) . ' ' . $bulan[date('F', $timestamp)] . ' ' . date('Y', $timestamp);
 }
