@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([$username]);
         $user = $stmt->fetch();
 
-        if ($user && password_verify($password, $user['password'])) {
+        if ($user && $user['role'] === 'admin' && password_verify($password, $user['password'])) {
             // Jika password cocok, data user disimpan ke session sebagai tanda sudah login.
             $_SESSION['user'] = [
                 'id_user' => $user['id_user'],

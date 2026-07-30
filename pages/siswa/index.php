@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../includes/auth.php';
-require_roles(['admin', 'pembina']);
+require_roles(['admin']);
 $keyword = trim($_GET['q'] ?? '');
 $stmt = $pdo->prepare('SELECT * FROM siswa WHERE nama_siswa LIKE ? OR kode_siswa LIKE ? OR nis LIKE ? ORDER BY kode_siswa ASC');
 $search = '%' . $keyword . '%';

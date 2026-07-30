@@ -2,22 +2,12 @@
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../includes/auth.php';
 require_once __DIR__ . '/../../includes/pdf_report.php';
-require_login();
+require_roles(['admin']);
 
 $type = $_GET['type'] ?? '';
-$role = user_role();
-
-function require_report_roles(array $roles): void
-{
-    if (!in_array(user_role(), $roles, true)) {
-        http_response_code(403);
-        exit('Anda tidak memiliki izin export report ini.');
-    }
-}
 
 switch ($type) {
     case 'siswa':
-        require_report_roles(['admin', 'pembina']);
         $rows = $pdo->query('SELECT kode_siswa, nama_siswa, nis, no_handphone, jenis_kelamin FROM siswa ORDER BY kode_siswa ASC')->fetchAll();
         foreach ($rows as $index => &$row) {
             $row = array_merge(['no' => (string) ($index + 1)], $row);
@@ -34,7 +24,6 @@ switch ($type) {
         break;
 
     case 'kriteria':
-        require_report_roles(['admin']);
         $rows = $pdo->query('SELECT kode_kriteria, nama_kriteria, bobot, tipe FROM kriteria ORDER BY kode_kriteria ASC')->fetchAll();
         foreach ($rows as $index => &$row) {
             $row = array_merge(['no' => (string) ($index + 1)], $row);
@@ -50,7 +39,6 @@ switch ($type) {
         break;
 
     case 'penilaian':
-        require_report_roles(['admin', 'pembina']);
         $kriteria = $pdo->query('SELECT id_kriteria, kode_kriteria FROM kriteria ORDER BY kode_kriteria ASC')->fetchAll();
         $siswa = $pdo->query('SELECT id_siswa, kode_siswa, nama_siswa FROM siswa ORDER BY kode_siswa ASC')->fetchAll();
         $nilaiStmt = $pdo->query('SELECT id_siswa, id_kriteria, nilai FROM penilaian');
@@ -84,7 +72,6 @@ switch ($type) {
         break;
 
     case 'hasil-seleksi':
-        require_report_roles(['admin', 'pembina', 'kepala_sekolah']);
         $rows = $pdo->query('SELECT h.ranking, s.kode_siswa, s.nama_siswa, h.nilai_v, h.tahun_ajaran, h.tanggal_pengumuman FROM hasil_wp h JOIN siswa s ON s.id_siswa=h.id_siswa ORDER BY h.ranking ASC')->fetchAll();
         foreach ($rows as &$row) {
             $row['nilai_v'] = number_format((float) $row['nilai_v'], 4);

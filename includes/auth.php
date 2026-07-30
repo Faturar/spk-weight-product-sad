@@ -67,14 +67,14 @@ function can_manage_master(): bool
 
 function can_input_nilai(): bool
 {
-    return in_array(user_role(), ['admin', 'pembina'], true);
+    return user_role() === 'admin';
 }
 
 function require_roles(array $roles): void
 {
-    // Mengecek hak akses berdasarkan role, misalnya admin atau pembina.
+    // Aplikasi hanya menggunakan role admin.
     require_login();
-    if (!in_array(user_role(), $roles, true)) {
+    if (user_role() !== 'admin') {
         http_response_code(403);
         include __DIR__ . '/header.php';
         echo '<div class="card"><h2>Akses ditolak</h2><p>Anda tidak memiliki izin membuka halaman ini.</p></div>';

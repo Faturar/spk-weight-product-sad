@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../includes/auth.php';
-require_roles(['admin', 'pembina']);
+require_roles(['admin']);
 $rows = $pdo->query('SELECT * FROM siswa ORDER BY kode_siswa ASC')->fetchAll();
 report_header('Laporan Data Siswa');
 ?>

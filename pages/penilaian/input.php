@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../includes/auth.php';
-require_roles(['admin', 'pembina']);
+require_roles(['admin']);
 
 // id_siswa dari URL menentukan siswa yang nilainya akan diinput atau diedit.
 $idSiswa = (int) ($_GET['id_siswa'] ?? 0);

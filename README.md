@@ -27,15 +27,13 @@ $password = '';
 1. Salin folder `spk-pramuka-wp` ke dalam folder `htdocs` XAMPP atau `www` Laragon.
 2. Pastikan database sudah diimport.
 3. Buka browser ke `http://localhost/spk-pramuka-wp/login.php`.
-4. Login menggunakan salah satu akun default.
+4. Login menggunakan akun admin default.
 
 ## Akun Login Default
 
 | Role | Username | Password |
 | --- | --- | --- |
 | Admin | `admin` | `admin123` |
-| Pembina | `pembina` | `pembina123` |
-| Kepala Sekolah | `kepala` | `kepala123` |
 
 Password pada database sudah disimpan menggunakan `password_hash()`. Jika ingin membuat hash baru, jalankan `php seed_password.php`.
 

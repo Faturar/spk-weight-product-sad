@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../includes/auth.php';
-require_roles(['admin', 'pembina']);
+require_roles(['admin']);
 
 // Kriteria menjadi kolom tabel, sedangkan siswa menjadi baris penilaian.
 $kriteria = $pdo->query('SELECT * FROM kriteria ORDER BY kode_kriteria ASC')->fetchAll();

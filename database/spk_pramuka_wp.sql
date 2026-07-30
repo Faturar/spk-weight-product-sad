@@ -13,7 +13,7 @@ CREATE TABLE users (
     nama VARCHAR(100) NOT NULL,
     username VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    role ENUM('admin','pembina','kepala_sekolah') NOT NULL,
+    role ENUM('admin') NOT NULL DEFAULT 'admin',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
@@ -69,9 +69,7 @@ CREATE TABLE hasil_wp (
 ) ENGINE=InnoDB;
 
 INSERT INTO users (nama, username, password, role) VALUES
-('Admin', 'admin', '$2y$10$yWSqx.c4Q7uyqrcllU/0R.oP6d.jGLvqxed8SFXM7YqdhLrpjIJDm', 'admin'),
-('Pembina', 'pembina', '$2y$10$YIPw4N4bdU2V3gddS40w7eAhKSyuJ10eI8DtTJFf5YGxqjcLZju16', 'pembina'),
-('Kepala Sekolah', 'kepala', '$2y$10$sTl0hF5fpaPpAZNsPyLB2.SGRUr2gVFr.tmhE8rDJtOtUwsff6n4C', 'kepala_sekolah');
+('Admin', 'admin', '$2y$10$yWSqx.c4Q7uyqrcllU/0R.oP6d.jGLvqxed8SFXM7YqdhLrpjIJDm', 'admin');
 
 INSERT INTO siswa (id_siswa, kode_siswa, nama_siswa, nis, no_handphone, jenis_kelamin) VALUES
 (1, 'A1', 'Alif', '2026001', '081234560001', 'Laki-laki'),
