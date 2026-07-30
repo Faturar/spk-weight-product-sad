@@ -4,6 +4,10 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+if (!defined('REPORT_PEMBINA_NAME')) {
+    define('REPORT_PEMBINA_NAME', 'Muhammad Irfan, S.Ag.');
+}
+
 function base_url(string $path = ''): string
 {
     static $base = null;
@@ -99,6 +103,36 @@ function show_flash(): void
     }
 }
 
+function format_tanggal_cetak(?int $timestamp = null): string
+{
+    $timestamp ??= time();
+    $hari = [
+        'Sunday' => 'minggu',
+        'Monday' => 'senin',
+        'Tuesday' => 'selasa',
+        'Wednesday' => 'rabu',
+        'Thursday' => 'kamis',
+        'Friday' => 'jumat',
+        'Saturday' => 'sabtu',
+    ];
+    $bulan = [
+        'January' => 'januari',
+        'February' => 'februari',
+        'March' => 'maret',
+        'April' => 'april',
+        'May' => 'mei',
+        'June' => 'juni',
+        'July' => 'juli',
+        'August' => 'agustus',
+        'September' => 'september',
+        'October' => 'oktober',
+        'November' => 'november',
+        'December' => 'desember',
+    ];
+
+    return $hari[date('l', $timestamp)] . ', ' . date('j', $timestamp) . ' ' . $bulan[date('F', $timestamp)] . ' ' . date('Y', $timestamp);
+}
+
 function report_header(string $title): void
 {
     // Header khusus halaman cetak laporan.
@@ -109,6 +143,6 @@ function report_header(string $title): void
 function report_footer(): void
 {
     // Footer laporan sekaligus memanggil window.print() agar dialog cetak otomatis muncul.
-    $tanggal = date('d-m-Y');
-    echo '<div class="signature"><p>Kota Depok, ' . e($tanggal) . '</p><p>Mengetahui,</p><p>Pembina</p><br><br><p>________________________</p></div></div><script>window.print();</script></body></html>';
+    $tanggal = format_tanggal_cetak();
+    echo '<div class="signature"><p>Kota Depok, ' . e($tanggal) . '</p><p>Mengetahui,</p><p>Pembina</p><br><br><p>________________________</p><p>' . e(REPORT_PEMBINA_NAME) . '</p></div></div><script>window.print();</script></body></html>';
 }

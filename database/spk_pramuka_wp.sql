@@ -1,4 +1,4 @@
-﻿CREATE DATABASE IF NOT EXISTS spk_pramuka_wp CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS spk_pramuka_wp CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE spk_pramuka_wp;
 
 DROP TABLE IF EXISTS hasil_wp;

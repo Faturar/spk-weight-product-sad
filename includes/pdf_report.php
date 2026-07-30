@@ -1,5 +1,9 @@
 <?php
 
+if (!defined('REPORT_PEMBINA_NAME')) {
+    define('REPORT_PEMBINA_NAME', 'Muhammad Irfan, S.Ag.');
+}
+
 class SimplePdfReport
 {
     private float $width;
@@ -51,7 +55,7 @@ class SimplePdfReport
         }
     }
 
-    public function signature(string $city = 'Kota Depok', string $name = 'Pembina'): void
+    public function signature(string $city = 'Kota Depok', string $name = REPORT_PEMBINA_NAME): void
     {
         if ($this->y > $this->height - 155) {
             $this->addPage();
@@ -61,8 +65,9 @@ class SimplePdfReport
         $this->y += 28;
         $this->text($x, $this->y, $city . ', ' . format_tanggal_indonesia(), 10);
         $this->text($x + 25, $this->y + 18, 'Mengetahui,', 10);
-        $this->text($x + 42, $this->y + 36, $name, 10);
+        $this->text($x + 42, $this->y + 36, 'Pembina', 10);
         $this->text($x + 15, $this->y + 92, '________________________', 10);
+        $this->text($x + 22, $this->y + 110, $name, 10);
     }
 
     public function output(): string
@@ -270,13 +275,13 @@ function format_tanggal_indonesia(?int $timestamp = null): string
 {
     $timestamp ??= time();
     $hari = [
-        'Sunday' => 'Minggu',
-        'Monday' => 'Senin',
-        'Tuesday' => 'Selasa',
-        'Wednesday' => 'Rabu',
-        'Thursday' => 'Kamis',
-        'Friday' => 'Jumat',
-        'Saturday' => 'Sabtu',
+        'Sunday' => 'minggu',
+        'Monday' => 'senin',
+        'Tuesday' => 'selasa',
+        'Wednesday' => 'rabu',
+        'Thursday' => 'kamis',
+        'Friday' => 'jumat',
+        'Saturday' => 'sabtu',
     ];
     $bulan = [
         'January' => 'januari',
@@ -293,5 +298,5 @@ function format_tanggal_indonesia(?int $timestamp = null): string
         'December' => 'desember',
     ];
 
-    return $hari[date('l', $timestamp)] . ' ' . date('j', $timestamp) . ' ' . $bulan[date('F', $timestamp)] . ' ' . date('Y', $timestamp);
+    return $hari[date('l', $timestamp)] . ', ' . date('j', $timestamp) . ' ' . $bulan[date('F', $timestamp)] . ' ' . date('Y', $timestamp);
 }
