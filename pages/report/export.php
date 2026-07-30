@@ -8,7 +8,7 @@ $type = $_GET['type'] ?? '';
 
 switch ($type) {
     case 'siswa':
-        $rows = $pdo->query('SELECT kode_siswa, nama_siswa, nis, no_handphone, jenis_kelamin FROM siswa ORDER BY kode_siswa ASC')->fetchAll();
+        $rows = $pdo->query('SELECT kode_siswa, nama_siswa, nis, no_handphone, jenis_kelamin, kelas FROM siswa ORDER BY kode_siswa ASC')->fetchAll();
         foreach ($rows as $index => &$row) {
             $row = array_merge(['no' => (string) ($index + 1)], $row);
         }
@@ -20,6 +20,7 @@ switch ($type) {
             ['key' => 'nis', 'label' => 'NIS', 'width' => 95],
             ['key' => 'no_handphone', 'label' => 'No HP', 'width' => 110],
             ['key' => 'jenis_kelamin', 'label' => 'Jenis Kelamin', 'width' => 95],
+            ['key' => 'kelas', 'label' => 'Kelas', 'width' => 50],
         ], $rows, 'report-data-siswa');
         break;
 
