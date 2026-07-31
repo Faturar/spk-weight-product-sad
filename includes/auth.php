@@ -109,27 +109,27 @@ function format_tanggal_cetak(?int $timestamp = null): string
 {
     $timestamp ??= time();
     $hari = [
-        'Sunday' => 'minggu',
-        'Monday' => 'senin',
-        'Tuesday' => 'selasa',
-        'Wednesday' => 'rabu',
-        'Thursday' => 'kamis',
-        'Friday' => 'jumat',
-        'Saturday' => 'sabtu',
+        'Sunday' => 'Minggu',
+        'Monday' => 'Senin',
+        'Tuesday' => 'Selasa',
+        'Wednesday' => 'Rabu',
+        'Thursday' => 'Kamis',
+        'Friday' => 'Jumat',
+        'Saturday' => 'Sabtu',
     ];
     $bulan = [
-        'January' => 'januari',
-        'February' => 'februari',
-        'March' => 'maret',
-        'April' => 'april',
-        'May' => 'mei',
-        'June' => 'juni',
-        'July' => 'juli',
-        'August' => 'agustus',
-        'September' => 'september',
-        'October' => 'oktober',
-        'November' => 'november',
-        'December' => 'desember',
+        'January' => 'Januari',
+        'February' => 'Februari',
+        'March' => 'Maret',
+        'April' => 'April',
+        'May' => 'Mei',
+        'June' => 'Juni',
+        'July' => 'Juli',
+        'August' => 'Agustus',
+        'September' => 'September',
+        'October' => 'Oktober',
+        'November' => 'November',
+        'December' => 'Desember',
     ];
 
     return $hari[date('l', $timestamp)] . ', ' . date('j', $timestamp) . ' ' . $bulan[date('F', $timestamp)] . ' ' . date('Y', $timestamp);
