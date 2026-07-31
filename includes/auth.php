@@ -4,6 +4,8 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+date_default_timezone_set('Asia/Jakarta');
+
 if (!defined('REPORT_PEMBINA_NAME')) {
     define('REPORT_PEMBINA_NAME', 'Muhammad Irfan, S.Ag.');
 }
@@ -136,6 +138,9 @@ function format_tanggal_cetak(?int $timestamp = null): string
 function report_header(string $title): void
 {
     // Header khusus halaman cetak laporan.
+    header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+    header('Pragma: no-cache');
+    header('Expires: 0');
     echo '<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>' . e($title) . '</title><link rel="stylesheet" href="' . e(base_url('assets/css/style.css')) . '"></head><body class="print-page">';
     echo '<div class="report"><div class="report-kop"><h2>MTs Nurul Falah Areman</h2><p>Jl. Menpor Palsigunung No.89 RT 1 / RW.7 Tugu, Kec. Cimanggis, Kota Depok, Jawa Barat 16451</p></div><h3>' . e($title) . '</h3>';
 }
