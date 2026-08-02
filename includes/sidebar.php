@@ -1,6 +1,6 @@
 <aside class="sidebar">
     <div class="brand">
-        <img src="<?= e(base_url('logo.png')) ?>" alt="Logo SPK Pramuka WP" class="brand-logo">
+        <img src="<?= e(asset_url('logo.png')) ?>" alt="Logo SPK Pramuka WP" class="brand-logo">
         <div>SPK WP<br><span>Pramuka Inti</span></div>
     </div>
     <nav>

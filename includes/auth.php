@@ -40,6 +40,15 @@ function base_url(string $path = ''): string
     return $base . ($path ? '/' . ltrim($path, '/') : '');
 }
 
+function asset_url(string $path): string
+{
+    $path = ltrim($path, '/');
+    $absolutePath = dirname(__DIR__) . '/' . $path;
+    $version = is_file($absolutePath) ? filemtime($absolutePath) : time();
+
+    return base_url($path) . '?v=' . $version;
+}
+
 function e($value): string
 {
     // Helper untuk mencegah XSS saat menampilkan data dari database atau input user.
@@ -142,7 +151,7 @@ function report_header(string $title): void
     header('Pragma: no-cache');
     header('Expires: 0');
     echo '<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>' . e($title) . '</title><link rel="stylesheet" href="' . e(base_url('assets/css/style.css')) . '"></head><body class="print-page">';
-    echo '<div class="report"><div class="report-kop"><h2>MTs Nurul Falah Areman</h2><p>Jl. Menpor Palsigunung No.89 RT 1 / RW.7 Tugu, Kec. Cimanggis, Kota Depok, Jawa Barat 16451</p></div><h3>' . e($title) . '</h3>';
+    echo '<div class="report"><div class="report-kop"><img src="' . e(asset_url('logo.png')) . '" alt="Logo MTs Nurul Falah Areman" class="report-logo"><h2>MTs Nurul Falah Areman</h2><p>Jl. Menpor Palsigunung No.89 RT 1 / RW.7 Tugu, Kec. Cimanggis, Kota Depok, Jawa Barat 16451</p></div><h3>' . e($title) . '</h3>';
 }
 
 function report_footer(): void

@@ -13,6 +13,7 @@ class SimplePdfReport
     private float $y = 36;
     private string $title;
     private string $generatedAt;
+    private ?array $logo = null;
 
     public function __construct(string $title, string $generatedAt, string $orientation = 'L')
     {
@@ -27,6 +28,7 @@ class SimplePdfReport
             $this->height = 595.28;
         }
 
+        $this->logo = $this->loadLogo();
         $this->addPage();
     }
 
@@ -80,9 +82,14 @@ class SimplePdfReport
         $objects = [];
         $objects[] = '<< /Type /Catalog /Pages 2 0 R >>';
 
+        $logoObjectNumber = null;
+        if ($this->logo) {
+            $logoObjectNumber = 4;
+        }
+
         $pageObjectNumbers = [];
         $contentObjectNumbers = [];
-        $nextObjectNumber = 4;
+        $nextObjectNumber = $logoObjectNumber ? 5 : 4;
         foreach ($this->pages as $_) {
             $pageObjectNumbers[] = $nextObjectNumber++;
             $contentObjectNumbers[] = $nextObjectNumber++;
@@ -92,8 +99,17 @@ class SimplePdfReport
         $objects[] = '<< /Type /Pages /Kids [' . $kids . '] /Count ' . count($this->pages) . ' >>';
         $objects[] = '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>';
 
+        if ($this->logo) {
+            $objects[] = '<< /Type /XObject /Subtype /Image /Width ' . $this->logo['width'] . ' /Height ' . $this->logo['height'] . ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ' . strlen($this->logo['data']) . " >>\nstream\n" . $this->logo['data'] . "\nendstream";
+        }
+
+        $resources = '/Font << /F1 3 0 R >>';
+        if ($logoObjectNumber) {
+            $resources .= ' /XObject << /Im1 ' . $logoObjectNumber . ' 0 R >>';
+        }
+
         foreach ($this->pages as $index => $content) {
-            $objects[] = '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ' . $this->formatNumber($this->width) . ' ' . $this->formatNumber($this->height) . '] /Resources << /Font << /F1 3 0 R >> >> /Contents ' . $contentObjectNumbers[$index] . ' 0 R >>';
+            $objects[] = '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ' . $this->formatNumber($this->width) . ' ' . $this->formatNumber($this->height) . '] /Resources << ' . $resources . ' >> /Contents ' . $contentObjectNumbers[$index] . ' 0 R >>';
             $objects[] = '<< /Length ' . strlen($content) . " >>\nstream\n" . $content . "\nendstream";
         }
 
@@ -128,13 +144,17 @@ class SimplePdfReport
 
     private function reportHeader(): void
     {
-        $this->text(0, $this->y, 'MTs Nurul Falah Areman', 15, true, $this->width);
-        $this->text(0, $this->y + 18, 'Jl. Menpor Palsigunung No.89 RT 1 / RW.7 Tugu, Kec. Cimanggis, Kota Depok, Jawa Barat 16451', 9, false, $this->width);
-        $this->line(36, $this->y + 34, $this->width - 36, $this->y + 34);
-        $this->line(36, $this->y + 37, $this->width - 36, $this->y + 37);
-        $this->text(0, $this->y + 58, strtoupper($this->title), 13, true, $this->width);
-        $this->text(36, $this->y + 82, 'Tanggal Generate: ' . $this->generatedAt, 10);
-        $this->y += 105;
+        if ($this->logo) {
+            $this->image(50, $this->y - 5, 58, 58);
+        }
+
+        $this->text(0, $this->y + 4, 'MTs Nurul Falah Areman', 15, true, $this->width);
+        $this->text(0, $this->y + 24, 'Jl. Menpor Palsigunung No.89 RT 1 / RW.7 Tugu, Kec. Cimanggis, Kota Depok, Jawa Barat 16451', 9, false, $this->width);
+        $this->line(36, $this->y + 66, $this->width - 36, $this->y + 66);
+        $this->line(36, $this->y + 69, $this->width - 36, $this->y + 69);
+        $this->text(0, $this->y + 90, strtoupper($this->title), 13, true, $this->width);
+        $this->text(36, $this->y + 114, 'Tanggal Generate: ' . $this->generatedAt, 10);
+        $this->y += 137;
     }
 
     private function drawTableHeader(array $columns, float $x): void
@@ -237,6 +257,81 @@ class SimplePdfReport
             $this->current[] = sprintf('q %.3F %.3F %.3F rg %.2F %.2F %.2F %.2F re f Q', $fill[0] / 255, $fill[1] / 255, $fill[2] / 255, $x, $pdfY, $width, $height);
         }
         $this->current[] = $this->formatNumber($x) . ' ' . $this->formatNumber($pdfY) . ' ' . $this->formatNumber($width) . ' ' . $this->formatNumber($height) . ' re S';
+    }
+
+    private function image(float $x, float $y, float $width, float $height): void
+    {
+        if (!$this->logo) {
+            return;
+        }
+
+        $pdfY = $this->height - $y - $height;
+        $this->current[] = 'q ' . $this->formatNumber($width) . ' 0 0 ' . $this->formatNumber($height) . ' ' . $this->formatNumber($x) . ' ' . $this->formatNumber($pdfY) . ' cm /Im1 Do Q';
+    }
+
+    private function loadLogo(): ?array
+    {
+        $path = dirname(__DIR__) . '/logo.png';
+        if (!is_file($path)) {
+            return null;
+        }
+
+        $info = getimagesize($path);
+        if (!$info) {
+            return null;
+        }
+
+        $mime = $info['mime'] ?? '';
+        $data = $mime === 'image/jpeg' ? file_get_contents($path) : $this->convertLogoToJpeg($path, $mime);
+        if ($data === false || $data === null) {
+            return null;
+        }
+
+        return [
+            'width' => (int) $info[0],
+            'height' => (int) $info[1],
+            'data' => $data,
+        ];
+    }
+
+    private function convertLogoToJpeg(string $path, string $mime): ?string
+    {
+        if (!function_exists('imagecreatetruecolor')) {
+            return null;
+        }
+
+        if ($mime === 'image/png' && function_exists('imagecreatefrompng')) {
+            $source = imagecreatefrompng($path);
+        } elseif ($mime === 'image/webp' && function_exists('imagecreatefromwebp')) {
+            $source = imagecreatefromwebp($path);
+        } else {
+            return null;
+        }
+
+        if (!$source) {
+            return null;
+        }
+
+        $width = imagesx($source);
+        $height = imagesy($source);
+        $canvas = imagecreatetruecolor($width, $height);
+        if (!$canvas) {
+            imagedestroy($source);
+            return null;
+        }
+
+        $white = imagecolorallocate($canvas, 255, 255, 255);
+        imagefill($canvas, 0, 0, $white);
+        imagecopy($canvas, $source, 0, 0, 0, 0, $width, $height);
+
+        ob_start();
+        imagejpeg($canvas, null, 90);
+        $data = ob_get_clean();
+
+        imagedestroy($canvas);
+        imagedestroy($source);
+
+        return $data === false ? null : $data;
     }
 
     private function cleanText(string $text): string

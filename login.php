@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <body class="login-page">
     <form class="login-card" method="post">
-        <img src="<?= e(base_url('logo.png')) ?>" alt="Logo SPK Pramuka WP" class="login-logo">
+        <img src="<?= e(asset_url('logo.png')) ?>" alt="Logo SPK Pramuka WP" class="login-logo">
         <h1>SPK Pramuka WP</h1>
         <p>MTs Nurul Falah Areman</p>
         <?php if ($error): ?><div class="alert alert-danger"><?= e($error) ?></div><?php endif; ?>
